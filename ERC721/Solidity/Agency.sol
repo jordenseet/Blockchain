@@ -1,7 +1,6 @@
 pragma solidity ^0.4.23;
 import "./SafeMath.sol";
 import "./Club.sol";
-import "./ERC721.sol";
 
 //@dev The Agency contract is a representation of a Sports Agency and their Agents
 contract Agency{
@@ -16,7 +15,7 @@ contract Agency{
     
     struct Agent{
         string name;
-        string agentId; //agentId should be unique too
+        string agentId; //agentId should be unique across agencies
         address agentAddress;
         uint8 contractLength; // in Years
         uint32 contractStart; // contract starts upon instantiation.
