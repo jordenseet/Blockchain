@@ -10,6 +10,14 @@ contract Club {
     string country;
     uint32 foundedDate;
     address clubAddress;
+
+    constructor(string _clubName,string _clubId,string _country,uint32 _foundedDate) public{
+        clubName = _clubName;
+        clubId = _clubId;
+        country = _country;
+        foundedDate = _foundedDate;
+        clubAddress = msg.sender;
+    }
     
     struct Athlete{
         string name;
@@ -50,5 +58,9 @@ contract Club {
             athleteLookup[athleteId].contractLength = uint8(contractLengthRemaining - numberOfYears);
         }
     }
-    
+    function newContract(string athleteId, uint32 contractStartDate, uint8 numberOfYears, uint32 newSalary) public{
+        athleteLookup[athleteId].contractStart = contractStartDate;
+        athleteLookup[athleteId].contractLength = numberOfYears;
+        athleteLookup[athleteId].weeklySalary = newSalary;
+    }
 }

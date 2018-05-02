@@ -12,6 +12,14 @@ contract Agency{
     string country;
     uint32 foundedDate;
     address agencyAddress;
+
+    constructor(string _agencyName, string _agencyId, string _country, uint32 _foundedDate){
+        agencyName = _agencyName;
+        agencyId = _agencyId;
+        country = _country;
+        foundedDate = _foundedDate;
+        agencyAddress = msg.sender;
+    }
     
     struct Agent{
         string name;
@@ -52,5 +60,9 @@ contract Agency{
             agentLookup[agentId].contractLength = uint8(contractLengthRemaining - numberOfYears);
         }
     }
-
+    function newContract(string agentId, uint32 contractStartDate, uint8 numberOfYears, uint32 newSalary) public{
+        agentLookup[agentId].contractStart = contractStartDate;
+        agentLookup[agentId].contractLength = numberOfYears;
+        agentLookup[agentId].weeklySalary = newSalary;
+    }
 }
