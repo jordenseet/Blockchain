@@ -10,8 +10,8 @@ contract Club {
     string country;
     uint32 foundedDate;
     address clubAddress;
-
-    constructor(string _clubName,string _clubId,string _country,uint32 _foundedDate) public{
+    
+    constructor(string _clubName,string _clubId,string _country,uint32 _foundedDate) internal{
         clubName = _clubName;
         clubId = _clubId;
         country = _country;
@@ -22,6 +22,7 @@ contract Club {
     struct Athlete{
         string name;
         string athleteId; //agentId should be unique too
+        address agentAddress;
         address athleteAddress;
         uint8 contractLength; // in Years
         uint32 contractStart; // contract starts upon instantiation.
@@ -39,11 +40,13 @@ contract Club {
     
     mapping(string=>address) clubLookup;
     mapping(string=>Athlete) athleteLookup;
+    mapping (string => address) athleteToAgent;
     
-    function createAgent(string name, string athleteId,address athleteAddress,uint8 contractLength, uint32 weeklySalary)
+    function createAthlete(string name, string athleteId,address agentAddress, address athleteAddress,uint8 contractLength, uint32 weeklySalary)
     public correctClub(clubAddress){
         clubLookup[athleteId] = msg.sender;
-        athleteLookup[athleteId] = (Athlete(name,athleteId,athleteAddress,contractLength, uint32(now), weeklySalary));
+        athleteLookup[athleteId] = (Athlete(name,athleteId,agentAddress,athleteAddress,contractLength, uint32(now), weeklySalary));
+        athleteToAgent[athleteId] = agentAddress;
     }
     function updateContractLength(string athleteId) public{
         uint32 contractStartDate = athleteLookup[athleteId].contractStart;

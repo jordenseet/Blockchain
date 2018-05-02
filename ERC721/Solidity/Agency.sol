@@ -13,7 +13,7 @@ contract Agency{
     uint32 foundedDate;
     address agencyAddress;
 
-    constructor(string _agencyName, string _agencyId, string _country, uint32 _foundedDate){
+    constructor(string _agencyName, string _agencyId, string _country, uint32 _foundedDate) internal{
         agencyName = _agencyName;
         agencyId = _agencyId;
         country = _country;

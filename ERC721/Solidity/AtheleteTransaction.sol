@@ -10,7 +10,7 @@ contract AthleteTransaction is modifiedERC721,Agency,Club{
     mapping (string => address) tokenApprovals;
     
     modifier legitCaller(string _tokenId){
-        require((msg.sender == clubLookup[_tokenId]) || (msg.sender == agencyLookup[_tokenId]));
+        require((msg.sender == clubLookup[_tokenId]) || (msg.sender == agencyLookup[_tokenId]) || (msg.sender == athleteToAgent[_tokenId]));
         _;
     }
     
@@ -28,7 +28,16 @@ contract AthleteTransaction is modifiedERC721,Agency,Club{
     
     function _transfer(address _from, address _to, string _tokenId) private {
         if (clubLookup[_tokenId] == 0){
-            if (agencyLookup[_tokenId] != 0){
+            if (agencyLookup[_tokenId] == 0){
+                if (athleteToAgent[_tokenId] != 0){
+                    athleteToAgent[_tokenId] = _to;
+                    emit Transfer(_from,_to,_tokenId);
+                }
+                else{
+                    revert();
+                }
+            }
+            else{
                 agencyLookup[_tokenId] = _to;
                 emit Transfer(_from, _to, _tokenId);
             }
