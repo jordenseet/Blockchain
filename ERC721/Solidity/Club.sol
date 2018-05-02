@@ -11,7 +11,7 @@ contract Club {
     uint32 foundedDate;
     address clubAddress;
     
-    constructor(string _clubName,string _clubId,string _country,uint32 _foundedDate) internal{
+    constructor(string _clubName,string _clubId,string _country,uint32 _foundedDate) public{
         clubName = _clubName;
         clubId = _clubId;
         country = _country;
@@ -29,10 +29,6 @@ contract Club {
         uint32 weeklySalary;
     }
     
-    modifier correctAthlete (address athleteAddress){
-        require(msg.sender == athleteAddress);
-        _;
-    }
     modifier correctClub (address thisClubAddress){
         require(msg.sender == thisClubAddress);
         _;
@@ -43,12 +39,12 @@ contract Club {
     mapping (string => address) athleteToAgent;
     
     function createAthlete(string name, string athleteId,address agentAddress, address athleteAddress,uint8 contractLength, uint32 weeklySalary)
-    public correctClub(clubAddress){
+    public{
         clubLookup[athleteId] = msg.sender;
         athleteLookup[athleteId] = (Athlete(name,athleteId,agentAddress,athleteAddress,contractLength, uint32(now), weeklySalary));
         athleteToAgent[athleteId] = agentAddress;
     }
-    function updateContractLength(string athleteId) public{
+    function updateContractLength(string athleteId) public correctClub(clubLookup[athleteId]){
         uint32 contractStartDate = athleteLookup[athleteId].contractStart;
         uint32 contractLengthRemaining = athleteLookup[athleteId].contractLength;
         uint32 currentDate = uint32(now);
@@ -61,7 +57,8 @@ contract Club {
             athleteLookup[athleteId].contractLength = uint8(contractLengthRemaining - numberOfYears);
         }
     }
-    function newContract(string athleteId, uint32 contractStartDate, uint8 numberOfYears, uint32 newSalary) public{
+    function newContract(string athleteId, uint32 contractStartDate, uint8 numberOfYears, uint32 newSalary) public
+     correctClub(clubLookup[athleteId]){
         athleteLookup[athleteId].contractStart = contractStartDate;
         athleteLookup[athleteId].contractLength = numberOfYears;
         athleteLookup[athleteId].weeklySalary = newSalary;

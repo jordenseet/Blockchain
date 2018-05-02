@@ -1,6 +1,5 @@
 pragma solidity ^0.4.23;
 import "./SafeMath.sol";
-import "./Club.sol";
 
 //@dev The Agency contract is a representation of a Sports Agency and their Agents
 contract Agency{
@@ -12,8 +11,8 @@ contract Agency{
     string country;
     uint32 foundedDate;
     address agencyAddress;
-
-    constructor(string _agencyName, string _agencyId, string _country, uint32 _foundedDate) internal{
+    
+    constructor(string _agencyName, string _agencyId, string _country, uint32 _foundedDate) public{
         agencyName = _agencyName;
         agencyId = _agencyId;
         country = _country;
@@ -23,17 +22,13 @@ contract Agency{
     
     struct Agent{
         string name;
-        string agentId; //agentId should be unique across agencies
+        string agentId; //agentId should be unique too
         address agentAddress;
         uint8 contractLength; // in Years
         uint32 contractStart; // contract starts upon instantiation.
         uint32 weeklySalary;
     }
-    
-    modifier correctAgent(address agentAddress){
-        require(msg.sender == agentAddress);
-        _;
-    }
+
     modifier correctAgency (address thisAgencyAddress){
         require(msg.sender == agencyAddress);
         _;
@@ -42,12 +37,11 @@ contract Agency{
     mapping(string=>address) agencyLookup;
     mapping(string=>Agent) agentLookup;
     
-    function createAgent(string name, string agentId,address agentAddress,uint8 contractLength, uint32 weeklySalary)
-     public correctAgency(agencyAddress){
+    function createAgent(string name, string agentId,address agentAddress,uint8 contractLength, uint32 weeklySalary) public{
         agencyLookup[agentId] = msg.sender;
         agentLookup[agentId] = (Agent(name,agentId,agentAddress,contractLength, uint32(now), weeklySalary));
     }
-    function updateContractLength(string agentId) public{
+    function updateContractLength(string agentId) public correctAgency(agencyLookup[agentId]){
         uint32 contractStartDate = agentLookup[agentId].contractStart;
         uint32 contractLengthRemaining = agentLookup[agentId].contractLength;
         uint32 currentDate = uint32(now);
@@ -60,9 +54,10 @@ contract Agency{
             agentLookup[agentId].contractLength = uint8(contractLengthRemaining - numberOfYears);
         }
     }
-    function newContract(string agentId, uint32 contractStartDate, uint8 numberOfYears, uint32 newSalary) public{
+    function newContract(string agentId, uint32 contractStartDate, uint8 numberOfYears, uint32 newSalary) public correctAgency(agencyLookup[agentId]){
         agentLookup[agentId].contractStart = contractStartDate;
         agentLookup[agentId].contractLength = numberOfYears;
         agentLookup[agentId].weeklySalary = newSalary;
     }
+
 }
