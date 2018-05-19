@@ -52,6 +52,7 @@ public class Blockchain {
         Block newBlock = new Block();
         if (head == null) {
             newBlock.setPreviousHash(new byte[32]);
+            //set genesis hash
         } else {
             newBlock.setPreviousHash(head.produceHash());
         }

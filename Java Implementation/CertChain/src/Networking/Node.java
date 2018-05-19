@@ -34,7 +34,7 @@ public class Node {
 
     }
 
-    public void send(Blockchain blockchain) {
+    public synchronized void send(Blockchain blockchain) {
 
         while (!isConnected) {
             try {
@@ -60,7 +60,7 @@ public class Node {
         }
     }
     
-    public void receive(){
+    public synchronized void receive(){
         try {
             String ip = ipAddresses.get(count);
             InetAddress inet = InetAddress.getByName(ip);
