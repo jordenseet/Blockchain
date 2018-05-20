@@ -1,11 +1,12 @@
 package certchain;
 
 import certchain.Block;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 
-public class Blockchain {
+public class Blockchain implements Serializable{
 
     private Block head;
     private ArrayList<Certificate> pool;

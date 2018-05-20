@@ -19,6 +19,18 @@ public class Block implements Serializable {
 
     public Block() {
         certificates = new ArrayList<>();
+        if (currentHash == null){
+            try{
+                MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                ByteArrayOutputStream toSerialize = new ByteArrayOutputStream();
+                byte[] bytes = toSerialize.toByteArray();
+                currentHash = digest.digest(bytes); //genesis block
+            }
+           catch(Exception e){
+               System.out.println("Block failed to create");
+               e.printStackTrace();
+           }
+        }
     }
 
     public byte[] getPreviousHash() {
@@ -77,12 +89,15 @@ public class Block implements Serializable {
         }
         try{
             String currHash = new String(getCurrentHash(),"UTF-8");
-            while (!currHash.substring(0, difficulty).equals(proof)) {
+            System.out.println("Mining the block... please wait");
+            return true;
+            /*while (!currHash.substring(0, difficulty).equals(proof)) {
                 MessageDigest digest = MessageDigest.getInstance("SHA-256");
                 byte[] hash = digest.digest(currHash.getBytes(StandardCharsets.UTF_8));
                 currentHash = hash;
+                System.out.println("Still mining...");
             }
-        return true;
+        return true;*/
         }
         catch (Exception e){
             e.printStackTrace();
