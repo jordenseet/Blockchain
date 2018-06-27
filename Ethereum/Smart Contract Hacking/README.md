@@ -14,3 +14,8 @@ Telephone
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 TelephoneAttack is about using contracts to pivot and "spoof" your txn.origin identity. You create a malicious contract class that instantiates the target vulnerable contract. By using the malicious contract class to call the vulnerable contract's functions, you create a divergence between txn.origin and msg.sender. This is useful for phishing attacks.
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Force
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Force is pretty simple. It tests your knowledge on the selfdestruct low-level function of Solidity, as well as your alertedness in using payable modifiers.
+You instantiate the malicious class with a payable constructor so that you can send funds to the victim contract immediately upon selfdestruct.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
