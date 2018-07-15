@@ -2,6 +2,8 @@ pragma solidity ^0.4.23;
 
 contract UBSComplianceApp{
     address owner;
+    mapping(address => bool) approvedPersonnel;
+    
     mapping (address => Customer) public customerDatabase;
     mapping (address => bool) private oneAccountChecker;
     uint8 randomizer = 61;
@@ -25,6 +27,21 @@ contract UBSComplianceApp{
 
     constructor() public payable{ //payable to ensure liquidity of application
         owner = msg.sender; 
+    }
+    
+    modifier onlyUBS(){
+        require(msg.sender == owner);
+        _;
+    }
+    
+    modifier onlyApprovedPersonnel(address toCheck){
+        require(approvedPersonnel[toCheck] == true);
+        _;
+    }
+    
+    function approvePersonnel(address toApprove) public onlyUBS returns (bool){
+        approvedPersonnel[toApprove] = true;
+        return true;
     }
 
     function addCustomer(string name, uint8 age, uint monthlyIncome) public{
@@ -98,13 +115,13 @@ contract UBSComplianceApp{
             c.risk = RiskFactor.HighRisk;
         }
     }
-    function updateAge() public returns (uint8){
+    function updateAge() public returns (uint8) {
         require(oneAccountChecker[msg.sender] == true);
         customerDatabase[msg.sender].age++;
         return customerDatabase[msg.sender].age;
     }
     
-    function getRiskStatus(address customer) view public returns (string) {
+    function getRiskStatus(address customer) view public onlyApprovedPersonnel(msg.sender) returns (string) {
         Customer storage c = customerDatabase[customer];
         if (c.risk == RiskFactor.LowRisk){
             return "Customer has low risk profile";
