@@ -11,13 +11,13 @@ contract CoolWalletManager{
     address owner;
     bool public frozen = false;
     bool public abandoned = false;
-    uint required = accounts.length/3;
+    uint required = accounts.length/5;
     // The following variable is to prevent malicious actors from simply forming more than 30% of accounts at early stages and voting for freezing/abandoning.
     // Each wallet will get to vote on the minimum number of wallets made before it is safe to hand over control
     // of freezing and abandoning wallets to the people. 
     // The vote for the minimum number will be averaged out with every new wallet
     // The number is set high to counteract malicious votes on the minimum number
-    uint CommunityVotingMinNumber = 1000;
+    uint public CommunityVotingMinNumber = 1000;
     
     constructor() public{
         owner = msg.sender;
@@ -30,6 +30,11 @@ contract CoolWalletManager{
     
     modifier normalActivity(){
         require(frozen == false && abandoned == false);
+        _;
+    }
+    
+    modifier unlockedAccount(){
+        require(unlockedAccounts[tx.origin] == true);
         _;
     }
     
@@ -57,10 +62,12 @@ contract CoolWalletManager{
         _;
     }
     
-    function newWallet(uint _minNumToDecentralize) public payable normalActivity{
-        CoolWallet newWallet = new CoolWallet(owner,_minNumToDecentralize);
-        accounts.push(newWallet.owner());
-        unlockedAccounts[newWallet.owner()] = true;
+    function createWallet(int _minNumToDecentralize) public payable normalActivity{
+        require(_minNumToDecentralize >= 0);
+        require(unlockedAccounts[tx.origin] == false);
+        unlockedAccounts[tx.origin] = true;
+        accounts.push(tx.origin);
+        CoolWallet newWallet = (new CoolWallet)(_minNumToDecentralize);
         newWallet.transfer(msg.value);
     }
     
@@ -80,13 +87,20 @@ contract CoolWalletManager{
         }
     }
     
-    function communityVote(uint minNumberToDecentralize) external{
-        require(unlockedAccounts[msg.sender] == true);
+    function communityVote(uint minNumberToDecentralize) unlockedAccount external{
         CommunityVotingMinNumber += minNumberToDecentralize;
         CommunityVotingMinNumber /= accounts.length;
     }
     
-    function() private payable{    
+    function votingForFreeze(bool toFreeze) unlockedAccount external {
+        freezeVotes[tx.origin] = toFreeze;
+    }
+    
+    function votingForAbandon(bool toAbandon) unlockedAccount external {
+        abandonVotes[tx.origin] = toAbandon;
+    }
+    
+    function() public payable{    
         //allow contract to receive money
     }
 }
@@ -110,20 +124,21 @@ contract CoolWallet is usingOraclize{
     string public ETHUSD;
     address public owner;
     address manager;
-    uint dailyLimit;
+    uint public dailyLimit;
     uint dayStart;
     uint dailySum = 0;
-    uint public exchangeRateFullDecimal;
+    uint exchangeRateFullDecimal;
     bool frozen;
     
     event newOraclizeQuery(string description);
     event updatedPrice(string price);
     
-    constructor(address _manager, uint _minNumberToDecentralize) public payable{
-        owner = msg.sender;
-        manager = _manager;
-        CoolWalletManager walletManager = CoolWalletManager(manager);
-        walletManager.communityVote(_minNumberToDecentralize);
+    constructor(int _minNumberToDecentralize) public payable{
+        owner = tx.origin;
+        manager = msg.sender;
+        CoolWalletManager walletManager = CoolWalletManager(msg.sender);
+        uint communityVoteNumber = uint(_minNumberToDecentralize);
+        walletManager.communityVote(communityVoteNumber);
         dayStart = now;
         oraclize_setProof(proofType_TLSNotary | proofStorage_IPFS);
         update();
@@ -175,7 +190,7 @@ contract CoolWallet is usingOraclize{
         }
     } 
     
-        function massSendInUSD(address[] recipients, uint256 usdValue) public onlyOwner enoughBalance(recipients, usdValue.mul(100000000000000000000000).div(exchangeRateFullDecimal)) underDailyLimit(recipients, usdValue.mul(100000000000000000000000).div(exchangeRateFullDecimal)) normalActivity returns (bool){
+    function massSendInUSD(address[] recipients, uint256 usdValue) public onlyOwner enoughBalance(recipients, usdValue.mul(100000000000000000000000).div(exchangeRateFullDecimal)) underDailyLimit(recipients, usdValue.mul(100000000000000000000000).div(exchangeRateFullDecimal)) normalActivity returns (bool){
         if (now > dayStart + 1 days){
             dailySum = 0;
             dayStart = now;
@@ -201,12 +216,22 @@ contract CoolWallet is usingOraclize{
         selfdestruct(owner);
     }
     
-    function() private payable{    
+    function voteToFreeze(bool vote) public{
+        CoolWalletManager walletManager = CoolWalletManager(manager);
+        walletManager.votingForFreeze(vote);
+    }
+    
+    function voteToAbandon(bool vote) public{
+        CoolWalletManager walletManager = CoolWalletManager(manager);
+        walletManager.votingForAbandon(vote);
+    }
+    
+    function() public payable{    
         //allow contract to receive money
     }
     
     //Oracle functions
-    function __callback(bytes32 myid, string result) {
+    function __callback(bytes32 myid, string result, bytes proof) {
         if (msg.sender != oraclize_cbAddress()) revert();
         ETHUSD = result;
         updatedPrice(ETHUSD);
