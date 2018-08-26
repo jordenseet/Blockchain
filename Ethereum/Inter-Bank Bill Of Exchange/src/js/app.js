@@ -13,9 +13,9 @@ App = {
       App.web3Provider = web3.currentProvider;
     } else {
       // If no injected web3 instance is detected, fall back to Ganache
-      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
     }
-web3 = new Web3(App.web3Provider);
+    web3 = new Web3(App.web3Provider);
 
     return App.initContract();
   },
@@ -38,22 +38,26 @@ web3 = new Web3(App.web3Provider);
   },
 
   setBOE: function(event) {
+
+    console.log("hi there")
     event.preventDefault();
 
     var LetterOfCreditInstance;
+    var value = parseInt(document.getElementById("boeValue").value)
+    console.log(value)
 
     web3.eth.getAccounts(function(error, accounts) {
       if (error) {
         console.log(error);
       }
-
+      console.log(accounts[0])
      var account = accounts[0];
 
   App.contracts.LetterOfCredit.deployed().then(function(instance) {
     LetterOfCreditInstance = instance;
 
     // Execute adopt as a transaction by sending account
-    return LetterOfCreditInstance.setBillOfExchangePrice(document.getElementById("boeValue"),{from: account});
+    return LetterOfCreditInstance.setBillOfExchangePrice(value,{from: account});
   }).catch(function(err) {
     console.log(err.message);
   });
