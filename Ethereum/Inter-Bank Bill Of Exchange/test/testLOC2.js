@@ -9,7 +9,7 @@ contract('LetterOfCredit', function(accounts) {
 
     it("It should start an Auction if the Bill of Exchange fails", async() => {
         const loc = await LetterOfCredit.deployed()
-        await loc.createBOE(exporter,importer,shipper,50)
+        await loc.createBOE(exporter,importer,shipper,50)//create new BOE to start
   
         var eventEmitted = false
 
@@ -27,7 +27,7 @@ contract('LetterOfCredit', function(accounts) {
       it("It should reflect winning bidder correctly", async() => {
         var winning
         const loc = await LetterOfCredit.deployed()
-        await loc.createBOE(exporter,importer,shipper,50)
+        await loc.createBOE(exporter,importer,shipper,50)//create new BOE to start
   
         var eventEmitted = false
 
@@ -40,11 +40,11 @@ contract('LetterOfCredit', function(accounts) {
         await loc.exerciseBillOfExchange({from:importer, value:1})
         //auction can now start
         await loc.unclaimedAuction(59,{from:shipper})
-        await loc.unclaimedAuction(57,{from:accounts[3]})
-        await loc.unclaimedAuction(91,{from:accounts[4]})
-        await loc.unclaimedAuction(78,{from:accounts[5]})
-        await loc.endAuction({from:exporter})
-        assert.equal(winning, accounts[4], 'The winning bidder is not reflected in the BOE')
+        await loc.unclaimedAuction(57,{from:accounts[3]}) //test if lower values are recorded
+        await loc.unclaimedAuction(91,{from:accounts[4]}) //this is the correct winning value
+        await loc.unclaimedAuction(78,{from:accounts[5]})//test if lower values are recorded
+        await loc.endAuction({from:exporter}) //remember to stop auction 
+        assert.equal(winning, accounts[4], 'The winning bidder is not reflected in the BOE') //winning bidder should be accounts[4]
         console.log("Winning bidder successfully reflected! Good job!")
       })
 })

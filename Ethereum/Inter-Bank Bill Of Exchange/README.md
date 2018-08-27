@@ -10,13 +10,16 @@ To start, run:
 2) truffle compile
 3) truffle migrate (Or run truffle migrate --reset if this is not your first time)
 4) truffle test
-(Note: test cases may occasionally fail due to async/await. Just run it until it passes all)
 
 This project runs on lite-server, please install lite-server on your directory.
 Run this command on your directory: npm install lite-server --save-dev
 After lite-server has been installed, type this command: npm run dev
 
 Test rationale and description are commented on the test cases itself
+
+To create a new Letter Of Credit, simply run: truffle migrate --reset
+New migrations deploy new contracts, each of which will represent a new Letter of Credit.
+All Letter of Credits will still exist within the blockchain network, and are accessible as long as u have the contract address.
 
 Emergency stop is implemented in line 69 of LetterOfCredit.sol
 
@@ -25,7 +28,7 @@ This DApp is used by a Bank that issues the Letter of Credit on the behalf of al
 
 As an Exporter, you can refinance the Letter of Credit through a distributed Bill of Exchange, which is also included in the Letter of Credit contract. After setting the price of the distributed Bill of Exchange, the Bill can be sold on the open market as an option.
 
-Investors can then exercise the Bill of Exchange through this dApp. If they have enough funds, they could finance the Letter of Credit, to become the new holder of the Bill. 
+Investors can then exercise the Bill of Exchange through this dApp. If they have enough funds, they could finance the Letter of Credit, to become the new holder of the Bill. If they do not, then Bill of Exchange will then go into an Auction.
 
 As Shippers fufill their duties of carriage, they could also update status of the good's statements on the blockchain, allowing all parties of the trade fiannce process to be kept updated on the shipment progress. 
 
