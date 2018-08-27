@@ -4,7 +4,7 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract LetterOfCredit is Ownable {
     address exporter;
-    address importer;
+    address public importer;
     address shipper;
     string shipmentStatus; 
     uint256 shipmentValue;
@@ -41,14 +41,14 @@ contract LetterOfCredit is Ownable {
 
     // The Letter of credit should only be instantiated by an exporter.  
     // In this exercise, we will only be simulating the Bill of Exchange, and Certificate of Inspection functions as smart contracts.
-    constructor( address importerAddr, address shipperAddr, uint256 shipmentVal) public {
-        exporter = msg.sender; 
+    constructor(address exporterAddr, address importerAddr, address shipperAddr, uint256 shipmentVal) public {
+        exporter = exporterAddr;
         importer = importerAddr; 
         shipper = shipperAddr;
         shipmentValue = shipmentVal; 
         shipmentStatus = "Shipped";
         boe = BillOfExchange({
-            holder: exporter,
+            holder: exporterAddr,
             paymentAmount: shipmentValue
         });
 
@@ -62,6 +62,10 @@ contract LetterOfCredit is Ownable {
 
     // Allow the Bill of Exchange Holder to set the value of the bill. 
     // This may only be performed by the holder of the bill.
+
+    function setExporter() public {
+        exporter = msg.sender;
+    }
 
     function emergencyOperationsStop() public onlyOwner{
         emergencyStop = true;
@@ -125,8 +129,7 @@ contract LetterOfCredit is Ownable {
     }
     function exerciseBillOfExchange() public normalActivity payable{
         // Attempt Transfer to BoE Holder
-        require(msg.sender == importer);
-        if(exporter.send(getBOEPaymentAmt())){
+        if(boe.holder.send(getBOEPaymentAmt())){
             boe.holder = msg.sender;
             auctionFailed = false;
             emit BOEExercised(boe.holder);
@@ -149,7 +152,7 @@ contract LetterOfCredit is Ownable {
                 date: now
             });
             // Attempt Transfer funds to BoE Holder.
-            if(exporter.send(shipmentValue)){
+            if(boe.holder.send(shipmentValue)){
                 shipmentStatus = "Collected"; 
                 emit CertificationDone(coi.certified,coi.date,shipmentStatus);
             }

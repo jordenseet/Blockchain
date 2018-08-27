@@ -67,37 +67,4 @@ contract('LetterOfCredit', function(accounts) {
 
       console.log("Certification of Inspection done correctly! Good job!")
     })
-
-
-      /*it("It should allow winning auction bidder to exercise BOE after winning auction", async() => {
-        /*var trigger
-        const loc = await LetterOfCredit.deployed()
-        loc.setIBCUsed(ibc.address)
-  
-        var eventEmitted = false
-        loc.setBillOfExchangePrice(10000)
-  
-        var event = loc.BOEFailed()
-        await event.watch((err, res) => {
-            trigger = res.args.message
-            eventEmitted = true
-        })
-  
-        await loc.exerciseBillOfExchange({from:importer})
-        //this will cause BOE to fail as importer doesn't have enough coins
-        //auction can now start
-
-        var event2 = loc.BOEExercised()
-        await event2.watch((err, res) => {
-            holder = res.args.newHolder
-            eventEmitted = true
-        })
-
-        await loc.unclaimedAuction(50,{from:shipper})
-        setTimeout(loc.unclaimedAuction(50,{from:shipper}),61000)
-        await loc.exerciseBillOfExchange({from:shipper})
-
-        assert.equal(holder, shipper, 'The winning bidder is not reflected in the BOE')
-        console.log("Auction started as expected! Good job!")
-      })*/
 });

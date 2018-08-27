@@ -55,8 +55,10 @@ App = {
 
             App.contracts.LetterOfCredit.deployed().then(function (instance) {
                 LetterOfCreditInstance = instance;
-                document.getElementById("contractAddress") = LetterOfCreditInstance.address;
                 console.log(LetterOfCreditInstance.address);
+                console.log(instance.getBOEHolder());
+                // send to index.html LetterOfCreditInstance.address
+                document.getElementById("contractAddress").innerHTML = "The contract address is " + LetterOfCreditInstance.address;
                 return LetterOfCreditInstance.setBillOfExchangePrice(value);
             }).catch(function (err) {
                 console.log(err.message);
