@@ -66,12 +66,11 @@ App = {
 
             App.contracts.LetterOfCredit.deployed().then(function (instance) {
                 LetterOfCreditInstance = instance;
-                
-                document.getElementById("contractAddress").innerHTML = "The contract address is " + LetterOfCreditInstance.address;
-                document.getElementById("boeCreation").innerHTML = "Contract " + LetterOfCreditInstance.address + " successfully updated with value " + shipmentValue;
-                document.getElementById("boeCreatedDetails").innerHTML = "Importer: " + importer +"<br> Exporter: " + exporter + "<br> Shipper: " + shipper;
-                console.log(LetterOfCreditInstance.address);
-                return LetterOfCreditInstance.createBOE(exporter,importer,shipper,shipmentValue);
+                return LetterOfCreditInstance.createBOE(exporter,importer,shipper,shipmentValue).then(function(){
+                    document.getElementById("contractAddress").innerHTML = "The contract address is " + LetterOfCreditInstance.address;
+                    document.getElementById("boeCreation").innerHTML = "Contract " + LetterOfCreditInstance.address + " successfully updated with value " + shipmentValue;
+                    document.getElementById("boeCreatedDetails").innerHTML = "Importer: " + importer +"<br> Exporter: " + exporter + "<br> Shipper: " + shipper;
+                });
             }).catch(function (err) {
                 console.log(err);
             });
@@ -84,8 +83,6 @@ App = {
         var LetterOfCreditInstance;
         var value = parseInt(document.getElementById("boeValue").value);
         var address = document.getElementById("desiredContract").value;
-        console.log("set address is " + address);
-        console.log("set value is " + value);
 
         web3.eth.getAccounts(function (error, accounts) {
             if (error) {
@@ -94,8 +91,9 @@ App = {
 
             App.contracts.LetterOfCredit.at(address).then(function (instance) {
                 LetterOfCreditInstance = instance;
-                document.getElementById("newBOEValue").innerHTML = address + "'s BOE value changed to " + value;
-                return LetterOfCreditInstance.setBillOfExchangePrice(value);
+                return LetterOfCreditInstance.setBillOfExchangePrice(value).then(function(){
+                    document.getElementById("newBOEValue").innerHTML = address + "'s BOE value changed to " + value;
+                });
             }).catch(function (err) {
                 console.log(err.message);
             });
@@ -110,13 +108,12 @@ App = {
             if (error) {
                 console.log(error);
             }
-
             App.contracts.LetterOfCredit.at(address).then(function (instance) {
                 LetterOfCreditInstance = instance;
                 LetterOfCreditInstance.getBOEPaymentAmt().then(function(result){
-                    console.log(result.toNumber());
-                    document.getElementById("exercisedBOE").innerHTML = address + " successfully exercised!";
-                    return LetterOfCreditInstance.exerciseBillOfExchange({value:result.toNumber()});
+                    return LetterOfCreditInstance.exerciseBillOfExchange({value:result.toNumber()}).then(function(){
+                        document.getElementById("exercisedBOE").innerHTML = address + " successfully exercised!";
+                    });
                 });
 
             }).catch(function (err) {
@@ -135,9 +132,10 @@ App = {
             }
 
             App.contracts.LetterOfCredit.at(address).then(function (instance) {
-                LetterOfCreditInstance = instance;
-                document.getElementById("auctionBOE").innerHTML = "Successfully bid " + bid + " amount for " + address;
-                return LetterOfCreditInstance.unclaimedAuction(bid);
+                LetterOfCreditInstance = instance; 
+                return LetterOfCreditInstance.unclaimedAuction(bid).then(function(){
+                    document.getElementById("auctionBOE").innerHTML = "Successfully bid " + bid + " amount for " + address;
+                });
             }).catch(function (err) {
                 console.log(err.message);
             });
@@ -153,11 +151,12 @@ App = {
             }
 
             App.contracts.LetterOfCredit.at(address).then(function (instance) {
-                LetterOfCreditInstance = instance;console.log("hi there");
+                LetterOfCreditInstance = instance;
                 LetterOfCreditInstance.getWinningBOEPaymentAmt().then(function(res1){
                     LetterOfCreditInstance.getWinningBOEHolder().then(function(res2){
-                        document.getElementById("auctionEndBOE").innerHTML = "Ending Auction now, winning bid is " + res1 + " by " + res2;
-                        return LetterOfCreditInstance.endAuction();
+                        return LetterOfCreditInstance.endAuction().then(function(){
+                             document.getElementById("auctionEndBOE").innerHTML = "Ending Auction now, winning bid is " + res1 + " by " + res2;
+                        });
                     })
                 });
                 
@@ -176,11 +175,11 @@ App = {
             if (error) {
                 console.log(error);
             }
-
             App.contracts.LetterOfCredit.at(address).then(function (instance) {
                 LetterOfCreditInstance = instance;
-                document.getElementById("ship").innerHTML = address + " successfully shipped!";
-                return LetterOfCreditInstance.completeShipment();
+                return LetterOfCreditInstance.completeShipment().then(function(){
+                    document.getElementById("ship").innerHTML = address + " successfully shipped!";
+                });
             }).catch(function (err) {
                 console.log(err.message);
             });
@@ -197,8 +196,9 @@ App = {
 
             App.contracts.LetterOfCredit.at(address).then(function (instance) {
                 LetterOfCreditInstance = instance;
-                document.getElementById("cert").innerHTML = address + " successfully certified and imported!";
-                return LetterOfCreditInstance.certifyCertOfInspection();
+                return LetterOfCreditInstance.certifyCertOfInspection().then(function(){
+                    document.getElementById("cert").innerHTML = address + " successfully certified and imported!";
+                });
             }).catch(function (err) {
                 console.log(err.message);
             });
@@ -245,8 +245,9 @@ App = {
 
             App.contracts.LetterOfCredit.at(address).then(function (instance) {
                 LetterOfCreditInstance = instance;
-                document.getElementById("contractStop").innerHTML = address + " successfully frozen!";
-                return LetterOfCreditInstance.emergencyOperationsStop();
+                return LetterOfCreditInstance.emergencyOperationsStop().then(function(){
+                    document.getElementById("contractStop").innerHTML = address + " successfully frozen!";
+                });
             }).catch(function (err) {
                 console.log(err.message);
             });
@@ -262,8 +263,9 @@ App = {
 
             App.contracts.LetterOfCredit.at(address).then(function (instance) {
                 LetterOfCreditInstance = instance;
-                document.getElementById("contractStart").innerHTML = address + " successfully restarted!";
-                return LetterOfCreditInstance.resumeOperations();
+                return LetterOfCreditInstance.resumeOperations().then(function(){
+                    document.getElementById("contractStart").innerHTML = address + " successfully restarted!";
+                });
             }).catch(function (err) {
                 console.log(err.message);
             });
