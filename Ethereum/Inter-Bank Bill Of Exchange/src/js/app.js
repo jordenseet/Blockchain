@@ -34,9 +34,38 @@ App = {
     },
 
     bindEvents: function () {
+        $(document).on('click', '.btn-create', App.createBOE);
         $(document).on('click', '.btn-set', App.setBOE);
         $(document).on('click', '.btn-exercise', App.exerciseBOE);
         $(document).on('click', '.btn-cert', App.certify);
+    },
+
+    createBOE: function(event) {
+        event.preventDefault();
+
+        var LetterOfCreditInstance;
+        var importer = document.getElementById("importer").value;
+        var exporter = document.getElementById("exporter").value;
+        var shipper = document.getElementById("shipper").value;
+        var shipmentValue = parseInt(document.getElementById("shipment").value);
+
+        web3.eth.getAccounts(function (error, accounts) {
+            if (error) {
+                console.log(error);
+            }
+
+            App.contracts.LetterOfCredit.deployed().then(function (instance) {
+                LetterOfCreditInstance = instance;
+                console.log(LetterOfCreditInstance.address);
+                console.log(instance.getBOEHolder());
+                // send to index.html LetterOfCreditInstance.address
+                document.getElementById("contractAddress").innerHTML = "The contract address is " + LetterOfCreditInstance.address;
+                
+                return LetterOfCreditInstance.createBOE(importer,exporter,shipper,shipmentValue);
+            }).catch(function (err) {
+                console.log(err.message);
+            });
+        });
     },
 
     setBOE: function(event) {
@@ -55,10 +84,6 @@ App = {
 
             App.contracts.LetterOfCredit.deployed().then(function (instance) {
                 LetterOfCreditInstance = instance;
-                console.log(LetterOfCreditInstance.address);
-                console.log(instance.getBOEHolder());
-                // send to index.html LetterOfCreditInstance.address
-                document.getElementById("contractAddress").innerHTML = "The contract address is " + LetterOfCreditInstance.address;
                 return LetterOfCreditInstance.setBillOfExchangePrice(value);
             }).catch(function (err) {
                 console.log(err.message);

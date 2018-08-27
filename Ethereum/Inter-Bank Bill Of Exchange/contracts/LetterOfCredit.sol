@@ -41,7 +41,15 @@ contract LetterOfCredit is Ownable {
 
     // The Letter of credit should only be instantiated by an exporter.  
     // In this exercise, we will only be simulating the Bill of Exchange, and Certificate of Inspection functions as smart contracts.
-    constructor(address exporterAddr, address importerAddr, address shipperAddr, uint256 shipmentVal) public {
+    constructor() public {
+    }
+
+//////////////// DO NOT EDIT CODE ABOVE THIS LINE ////////////////
+
+    // Allow the Bill of Exchange Holder to set the value of the bill. 
+    // This may only be performed by the holder of the bill.
+
+    function createBOE(address exporterAddr, address importerAddr, address shipperAddr, uint256 shipmentVal) public {
         exporter = exporterAddr;
         importer = importerAddr; 
         shipper = shipperAddr;
@@ -56,15 +64,6 @@ contract LetterOfCredit is Ownable {
             certified: false,
             date: 0
         });
-    }
-
-//////////////// DO NOT EDIT CODE ABOVE THIS LINE ////////////////
-
-    // Allow the Bill of Exchange Holder to set the value of the bill. 
-    // This may only be performed by the holder of the bill.
-
-    function setExporter() public {
-        exporter = msg.sender;
     }
 
     function emergencyOperationsStop() public onlyOwner{
