@@ -1,73 +1,108 @@
 App = {
-  web3Provider: null,
-  contracts: {},
+    web3Provider: null,
+    contracts: {},
 
-  init: function() {
-    console.log("App started")
-    return App.initWeb3();
-  },
+    init: function () {
+        console.log("App started")
+        return App.initWeb3();
+    },
 
-  initWeb3: function() {
-    // Is there an injected web3 instance?
-    if (typeof web3 !== 'undefined') {
-      App.web3Provider = web3.currentProvider;
-    } else {
-      // If no injected web3 instance is detected, fall back to Ganache
-      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
-    }
-    web3 = new Web3(App.web3Provider);
+    initWeb3: function () {
+        // Is there an injected web3 instance?
+        if (typeof web3 !== 'undefined') {
+            App.web3Provider = web3.currentProvider;
+        } else {
+            // If no injected web3 instance is detected, fall back to Ganache
+            App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
+        }
+        web3 = new Web3(App.web3Provider);
 
-    return App.initContract();
-  },
+        return App.initContract();
+    },
 
-  initContract: function() {
-    $.getJSON('LetterOfCredit.json', function(data) {
-      // Get the necessary contract artifact file and instantiate it with truffle-contract
-      var LetterOfCreditArtifact = data;
-      App.contracts.LetterOfCredit = TruffleContract(LetterOfCreditArtifact);
+    initContract: function () {
+        $.getJSON('LetterOfCredit.json', function (data) {
+            // Get the necessary contract artifact file and instantiate it with truffle-contract
+            var LetterOfCreditArtifact = data;
+            App.contracts.LetterOfCredit = TruffleContract(LetterOfCreditArtifact);
+
+            // Set the provider for our contract
+            App.contracts.LetterOfCredit.setProvider(App.web3Provider);
+        });
+
+        return App.bindEvents();
+    },
+
+    bindEvents: function () {
+        $(document).on('click', '.btn-set', App.setBOE);
+        $(document).on('click', '.btn-exercise', App.exerciseBOE);
+        $(document).on('click', '.btn-cert', App.certify);
+    },
+
+    setBOE: function(event) {
+
+        console.log("hi there")
+        event.preventDefault();
+
+        var LetterOfCreditInstance;
+        var value = parseInt(document.getElementById("boeValue").value)
+        console.log(value)
+
+        web3.eth.getAccounts(function (error, accounts) {
+            if (error) {
+                console.log(error);
+            }
+
+            App.contracts.LetterOfCredit.deployed().then(function (instance) {
+                LetterOfCreditInstance = instance;
+                document.getElementById("contractAddress") = LetterOfCreditInstance.address;
+                console.log(LetterOfCreditInstance.address);
+                return LetterOfCreditInstance.setBillOfExchangePrice(value);
+            }).catch(function (err) {
+                console.log(err.message);
+            });
+        });
+    },
+
     
-      // Set the provider for our contract
-      App.contracts.LetterOfCredit.setProvider(App.web3Provider);
-    });
+    exerciseBOE: function (event) {
+        event.preventDefault();
 
-    return App.bindEvents();
-  },
+        web3.eth.getAccounts(function (error, accounts) {
+            if (error) {
+                console.log(error);
+            }
 
-  bindEvents: function() {
-    $(document).on('click', '.btn-set', App.setBOE);
-  },
+            App.contracts.LetterOfCredit.deployed().then(function (instance) {
+                LetterOfCreditInstance = instance;
+                return LetterOfCreditInstance.exerciseBillOfExchange();
+            }).catch(function (err) {
+                console.log(err.message);
+            });
+        });
+    },
 
-  setBOE: function(event) {
+    certify: function (event) {
+        event.preventDefault();
 
-    console.log("hi there")
-    event.preventDefault();
+        web3.eth.getAccounts(function (error, accounts) {
+            if (error) {
+                console.log(error);
+            }
 
-    var LetterOfCreditInstance;
-    var value = parseInt(document.getElementById("boeValue").value)
-    console.log(value)
-
-    web3.eth.getAccounts(function(error, accounts) {
-      if (error) {
-        console.log(error);
-      }
-      console.log(accounts[0])
-     var account = accounts[0];
-
-  App.contracts.LetterOfCredit.deployed().then(function(instance) {
-    LetterOfCreditInstance = instance;
-
-    // Execute adopt as a transaction by sending account
-    return LetterOfCreditInstance.setBillOfExchangePrice(value,{from: account});
-  }).catch(function(err) {
-    console.log(err.message);
-  });
-});
-  }
+            App.contracts.LetterOfCredit.deployed().then(function (instance) {
+                LetterOfCreditInstance = instance;
+                return LetterOfCreditInstance.certifyCertOfInspection();
+            }).catch(function (err) {
+                console.log(err.message);
+            });
+        });
+    }
 
 };
 
-$(function() {
-  $(window).load(function() {
-    App.init();
-  });
+$(function () {
+    $(window).load(function () {
+        App.init();
+    });
 });
