@@ -4,14 +4,13 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";//usage of librar
 
 contract LetterOfCredit is Ownable {
     address exporter;
-    address public importer;
+    address importer;
     address shipper;
     string shipmentStatus; 
     uint256 shipmentValue;
     bool auctionStarted;
     bool auctionFailed;
     bool emergencyStop;
-    uint auctionStartTime; 
 
     BillOfExchange public boe;
     BillOfExchange public winningBid;
@@ -34,7 +33,7 @@ contract LetterOfCredit is Ownable {
         uint date; 
     }
 
-    modifier normalActivity(){
+    modifier normalActivity(){ //circuit breaker condition here
         require(emergencyStop == false);
         _;
     }
@@ -66,11 +65,11 @@ contract LetterOfCredit is Ownable {
         });
     }
 
-    function emergencyOperationsStop() public onlyOwner{
+    function emergencyOperationsStop() public onlyOwner{ //circuit breaker
         emergencyStop = true;
     }
 
-    function resumeOperations() public onlyOwner{
+    function resumeOperations() public onlyOwner{ //circuit joiner
         emergencyStop = false;
     }
 
@@ -81,6 +80,15 @@ contract LetterOfCredit is Ownable {
     function getBOEPaymentAmt() public view returns (uint value){
         return boe.paymentAmount;
     }
+
+    function getWinningBOEHolder() public view returns (address holder){
+        return winningBid.holder;
+    }
+
+    function getWinningBOEPaymentAmt() public view returns (uint value){
+        return winningBid.paymentAmount;
+    }
+
     function setBillOfExchangePrice(uint256 value) public {
         require(msg.sender == getBOEHolder());
         boe.paymentAmount = value; 
@@ -95,33 +103,27 @@ contract LetterOfCredit is Ownable {
         // Assume 1 minute firesale auctions if BOE is left unclaimed
         if (!auctionStarted && auctionFailed){
             auctionStarted = true;
-            auctionStartTime = now;
             winningBid = BillOfExchange({
                 holder: exporter,
                 paymentAmount: 0
             });
         }
-        if(now >= auctionStartTime + 1 minutes){
-            if (winningBid.holder == exporter && winningBid.paymentAmount == 0){
-                //auction has failed with no bidders
-                auctionStarted = false;
-                auctionFailed = true;
-                emit BOEFailed("Time to restart an Auction for the Bill of Exchange");
-            }
-            else{
-                boe = winningBid;
-                importer = boe.holder;
-            }
-        }
-        else if (value > winningBid.paymentAmount){
+        if (value > winningBid.paymentAmount){
             winningBid = BillOfExchange({
                 holder: msg.sender,
                 paymentAmount: value
             });
             emit WinningBid(msg.sender);
         }
-        
     }
+
+    function endAuction() public normalActivity{
+        require(msg.sender == getBOEHolder());
+        auctionFailed = false;
+        auctionStarted = false; //reset
+        boe = winningBid;
+    }
+
     function exerciseBillOfExchange() public normalActivity payable{
         // Attempt Transfer to BoE Holder
         if(boe.holder.send(getBOEPaymentAmt())){
@@ -132,7 +134,7 @@ contract LetterOfCredit is Ownable {
         else{
             auctionStarted = false;
             auctionFailed = true;
-            emit BOEFailed("Time to start an Auction for the Bill of Exchange");
+            emit BOEFailed("Starting an Auction for the Bill of Exchange");
         }
     }
 

@@ -21,23 +21,25 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <h1 class="text-center">Inter-Bank Bill of Exchange platform</h1>
+          <h1 class="text-center">One-Stop Letter Of Exchange platform</h1>
           <hr/>
           <br/>
         </div>
       </div>
+      <h1><p id="contractAddress"></p></h1>
       <form>
         <h1>Create a Bill of Exchange</h1>
         <br>
-        Importer address: <input type = "text" id = importer>
+        Exporter address: <input type = "text" id = "exporter">
         <br>
-        Exporter address: <input type = "text" id = exporter>
+        Importer address: <input type = "text" id = "importer">
         <br>
-        Shipper adress: <input type = "text" id = shipper>
+        Shipper adress: <input type = "text" id = "shipper">
         <br>
-        Shipment Value: <input type = "number" id = shipment min = "0"><br>
+        Shipment Value: <input type = "number" id = "shipment" min = "0"><br>
         <button class="btn btn-default btn-create" input type = "submit"> Submit </button>
-        <p id="contractAddress"></p>
+        <p id="boeCreation"></p>
+        <p id="boeCreatedDetails"></p>
         <br>
         <h1>Change Bill of Exchange contract value<br></h1>
         Enter Bill of Exchange contract address:
@@ -53,6 +55,20 @@
         <input type = "text" id = "exerciseContract">
         <button class="btn btn-default btn-exercise" input type = "submit"> Submit </button>
         <p id="exercisedBOE"></p>
+        <br>
+        <h1>Auction for unexercised Bill of Exchanges</h1>
+        Enter Bill of Exchange contract address:
+        <input type = "text" id = "auctionContract"><br>
+        Set Bill of Exchange value desired
+        <input type = "number" id = "auctionValue" min = "0"><br>
+        <button class="btn btn-default btn-auction" input type = "submit"> Submit </button>
+        <p id="auctionBOE"></p>
+        <br>
+        <h1>End Auction for unexercised Bill of Exchanges</h1>
+        Enter Bill of Exchange contract address:
+        <input type = "text" id = "auctionEndContract">
+        <button class="btn btn-default btn-auctionEnd" input type = "submit"> Submit </button>
+        <p id="auctionEndBOE"></p>
         <br>
         <h1>Indicate Shipment has arrived</h1>
         Enter Bill of Exchange contract address:

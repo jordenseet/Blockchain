@@ -43,7 +43,7 @@ contract('LetterOfCredit', function(accounts) {
         await loc.unclaimedAuction(57,{from:accounts[3]})
         await loc.unclaimedAuction(91,{from:accounts[4]})
         await loc.unclaimedAuction(78,{from:accounts[5]})
-        
+        await loc.endAuction({from:exporter})
         assert.equal(winning, accounts[4], 'The winning bidder is not reflected in the BOE')
         console.log("Winning bidder successfully reflected! Good job!")
       })
