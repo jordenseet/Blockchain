@@ -27,7 +27,7 @@
         </div>
       </div>
       <form>
-        Create a Bill of Exchange
+        <h1>Create a Bill of Exchange</h1>
         <br>
         Importer address: <input type = "text" id = importer>
         <br>
@@ -35,21 +35,49 @@
         <br>
         Shipper adress: <input type = "text" id = shipper>
         <br>
-        Shipment Value: <input type = "number" id = shipment min = "0">
+        Shipment Value: <input type = "number" id = shipment min = "0"><br>
         <button class="btn btn-default btn-create" input type = "submit"> Submit </button>
         <p id="contractAddress"></p>
         <br>
+        <h1>Change Bill of Exchange contract value<br></h1>
+        Enter Bill of Exchange contract address:
+        <input type = "text" id = "desiredContract">
+        <br>
         Set Bill of Exchange value desired
-        <input type = "number" name = "boeValue" id = "boeValue" min = "0">
+        <input type = "number" id = "boeValue" min = "0"><br>
         <button class="btn btn-default btn-set" input type = "submit"> Submit </button>
+        <p id="newBOEValue"></p>
         <br>
-        <br>
-        Exercise Bill of Exchange
+        <h1>Exercise Bill of Exchange</h1>
+        Enter Bill of Exchange contract address:
+        <input type = "text" id = "exerciseContract">
         <button class="btn btn-default btn-exercise" input type = "submit"> Submit </button>
+        <p id="exercisedBOE"></p>
         <br>
+        <h1>Indicate Shipment has arrived</h1>
+        Enter Bill of Exchange contract address:
+        <input type = "text" id = "shippedContract">
+        <button class="btn btn-default btn-ship" input type = "submit"> Submit </button>
+        <p id="ship"></p>
         <br>
-        Certify Certificate of Inspection
+        <h1>Certify Certificate of Inspection</h1>
+        Enter Bill of Exchange contract address:
+        <input type = "text" id = "certifiableContract">
         <button class="btn btn-default btn-cert" input type = "submit"> Submit </button>
+        <p id="cert"></p>
+        <br>
+        <h1>Retrieve BOE details</h1>
+        Enter Bill of Exchange contract address:
+        <input type = "text" id = "detailsContract">
+        <button class="btn btn-default btn-details" input type = "submit"> Submit </button>
+        <p id = "thisBoeHolder"></p>
+        <p id = "thisBoeValue"></p>
+        <h1>Emergency Stop/Start a Letter of Contract</h1>
+        Enter Letter of Credit contract address: <input type = "text" id = "emergencyContract"><br>
+        <button class="btn btn-default btn-stop" input type = "submit"> STOP! </button>
+        <button class="btn btn-default btn-start" input type = "submit"> Start! </button>
+        <p id = "contractStop"></p>
+        <p id = "contractStart"></p>
       </form>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

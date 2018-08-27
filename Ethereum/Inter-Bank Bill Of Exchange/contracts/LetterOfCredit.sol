@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";//usage of library
 
 contract LetterOfCredit is Ownable {
     address exporter;
@@ -82,10 +82,7 @@ contract LetterOfCredit is Ownable {
         return boe.paymentAmount;
     }
     function setBillOfExchangePrice(uint256 value) public {
-        if(msg.sender != getBOEHolder()){
-            return;
-        }
-
+        require(msg.sender == getBOEHolder());
         boe.paymentAmount = value; 
         emit BOESet(boe.paymentAmount,boe.holder);
     }
