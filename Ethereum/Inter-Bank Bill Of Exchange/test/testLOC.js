@@ -12,6 +12,7 @@ contract('LetterOfCredit', function(accounts) {
       var holder
       const loc = await LetterOfCredit.deployed()
       var eventEmitted = false
+      await loc.createBOE(exporter,importer,shipper,50)
 
       var event = loc.BOESet()
       await event.watch((err, res) => {
@@ -19,17 +20,16 @@ contract('LetterOfCredit', function(accounts) {
           holder = res.args.exporter
           eventEmitted = true
       })
-
       await loc.setBillOfExchangePrice(1 * Math.pow(10,18))
-      assert.equal(paymentAmount, 1 * Math.pow(10,18), 'The Bill of Exchange payment amount is incorrectly set')
       assert.equal(holder, exporter, 'The Bill of Exchange holder is incorrectly set')
+      assert.equal(paymentAmount, 1 * Math.pow(10,18), 'The Bill of Exchange payment amount is incorrectly set')
       console.log("Bill of Exchange set correctly! Good job!")
     })
 
     it("It should exercise a Bill of Exchange correctly", async() => {
         var holder
         const loc = await LetterOfCredit.deployed()
-        loc.setBillOfExchangePrice(1 * Math.pow(10,18))
+        await loc.createBOE(exporter,importer,shipper,50)
         var eventEmitted = false
         var event = loc.BOEExercised()
         await event.watch((err, res) => {
@@ -48,7 +48,7 @@ contract('LetterOfCredit', function(accounts) {
       var dateTime
       var shipStatus
       const loc = await LetterOfCredit.deployed()
-
+      loc.createBOE(exporter,importer,shipper,50)
       var eventEmitted = false
       loc.completeShipment({from:shipper})
 

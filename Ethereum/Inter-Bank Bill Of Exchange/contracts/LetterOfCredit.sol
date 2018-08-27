@@ -82,7 +82,7 @@ contract LetterOfCredit is Ownable {
         return boe.paymentAmount;
     }
     function setBillOfExchangePrice(uint256 value) public {
-        if(msg.sender != boe.holder){
+        if(msg.sender != getBOEHolder()){
             return;
         }
 
@@ -122,7 +122,6 @@ contract LetterOfCredit is Ownable {
                 paymentAmount: value
             });
             emit WinningBid(msg.sender);
-            auctionFailed = false;
         }
         
     }

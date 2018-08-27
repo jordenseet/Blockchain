@@ -48,6 +48,10 @@ App = {
         var exporter = document.getElementById("exporter").value;
         var shipper = document.getElementById("shipper").value;
         var shipmentValue = parseInt(document.getElementById("shipment").value);
+        console.log("importer is " + importer)
+        console.log("exporter is " + exporter)
+        console.log("shipper is " + shipper)
+        console.log("shipment value is " + shipmentValue)
 
         web3.eth.getAccounts(function (error, accounts) {
             if (error) {
@@ -57,11 +61,11 @@ App = {
             App.contracts.LetterOfCredit.deployed().then(function (instance) {
                 LetterOfCreditInstance = instance;
                 console.log(LetterOfCreditInstance.address);
-                console.log(instance.getBOEHolder());
                 // send to index.html LetterOfCreditInstance.address
                 document.getElementById("contractAddress").innerHTML = "The contract address is " + LetterOfCreditInstance.address;
                 
                 return LetterOfCreditInstance.createBOE(importer,exporter,shipper,shipmentValue);
+                console.log(instance.getBOEHolder());
             }).catch(function (err) {
                 console.log(err.message);
             });
