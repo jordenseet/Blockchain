@@ -4,16 +4,18 @@ Please ensure that you set Ganache to listen on port 8545.
 
 Library used: OpenZeppelin. To install, run this command: npm install -E openzeppelin-solidity
 
+This project runs on lite-server, please install lite-server on your directory.
+Run this command on your directory: npm install lite-server --save-dev
+After lite-server has been installed, type this command: npm run dev
+
+After the browser is launched, ensure that you are signed on to Metamask and import your accounts from Ganache accordingly.
+
 After which, we can set up our testing environment. 
 To start, run:
 1) truffle console --network=development
 2) truffle compile
 3) truffle migrate (Or run truffle migrate --reset if this is not your first time)
 4) truffle test
-
-This project runs on lite-server, please install lite-server on your directory.
-Run this command on your directory: npm install lite-server --save-dev
-After lite-server has been installed, type this command: npm run dev
 
 Test rationale and description are commented on the test cases itself
 
