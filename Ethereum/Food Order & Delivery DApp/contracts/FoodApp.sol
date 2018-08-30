@@ -100,13 +100,13 @@ contract FoodApp {
   }
 
   function preparedDish(uint dishNumber) public preparing(dishNumber) {
-      require(msg.sender == 0xca35b7d915458ef540ade6068dfe2f44e8fa733c);
+      require(msg.sender == owner);
       dishes[dishNumber].state = State.Delivering;
       emit Delivering(dishNumber);
   }
   
   function reachedDestination(uint dishNumber) public delivering(dishNumber){
-      require(msg.sender == 0xca35b7d915458ef540ade6068dfe2f44e8fa733c);
+      require(msg.sender == owner);
       dishes[dishNumber].state = State.AwaitingPayment;
       emit AwaitingPayment(dishNumber);
   }

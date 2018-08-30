@@ -1,4 +1,4 @@
-var Dish = artifacts.require('Dish')
+var Dish = artifacts.require('FoodApp')
 
 contract('Dish', function(accounts) {
 
@@ -101,4 +101,17 @@ contract('Dish', function(accounts) {
         assert.equal(ownerBalanceAfter, ownerBalanceBefore + parseInt(price, 10), "buyer's balance should be increased by the price of the item")
         assert.isBelow(buyerBalanceAfter, buyerBalanceBefore - price, "buyer's balance should be reduced by more than the price of the item (including gas costs)")
     })
+
+    it(" should log when message request is received", async() => {
+        Dish.deployed().then(function(twillio) {
+          var events = twillio.Message().watch(function(error, result) {
+            assert.equal(result.args.to, "+65-97890099");
+            assert.equal(result.args.body, "Test");
+            events.stopWatching();
+            done();
+          });
+    
+          twillio.createMessage("+65-97890099", "Test");
+        })
+      });
 });
