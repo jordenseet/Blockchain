@@ -1,5 +1,5 @@
 {
     "contract_name" : "NFT_Collection",
-    "collection_name" : "EpicMeta_EMERGE",
-    "symbol" : "EPICMETA"
+    "collection_name" : "Random_Test_Collection",
+    "symbol" : "RNDM_NFT"
 }
