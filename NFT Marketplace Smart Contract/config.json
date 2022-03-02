@@ -1,0 +1,12 @@
+{
+    "nft_contract_name" : "NFT_Collection",
+    "marketplace_contract_name": "NFT_Marketplace",
+    "collection_name" : "Random_Test_Collection",
+    "symbol" : "RNDM_NFT",
+    "num_sigs" : 3,
+    "signatories":["0x3dFd8d8C51C300d8296AadD034F70351D89A834e",
+        "0x8B3B79F04232694B5D1c635902f87B45C9b82238",
+        "0x3C4F2638D7c12e86249bF32cE0417542533F4eBa",
+        "0x5500fA90D27b7eDCe06E958bD3190b9584F21D3b"],
+    "penalty":10
+}

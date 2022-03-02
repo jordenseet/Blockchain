@@ -1,0 +1,9 @@
+{
+    "listingTokenID":1,
+    "minBid":1000,
+    "saleStartBlockNumber":500,
+    "saleEndBlockNumber":600,
+    "exercisePeriod":50,
+    "listerPublicKey":"0xc2A3cB7d4BF24e456051E3a710057ac61f5dB133",
+    "listerPrivateKey":"0xae6e55ee301653982277f9031e97e7a54ee258fd617214904baf62df3047e09b"
+}

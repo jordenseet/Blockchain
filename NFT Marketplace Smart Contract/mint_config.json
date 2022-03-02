@@ -1,0 +1,9 @@
+{
+    "nftContractAddress": "0x9299ff1fB69c9019A0B81BA6EEa9c3C5ed0dE1c1",
+    "marketplaceContractAddress": "0x5A308D8fEb1a718567EcF0BFfbD45261E512A367",
+    "tokenURIs":["https://gateway.pinata.cloud/ipfs/QmV3rE55LtyYPB2Lrae6kPwHo7F6dBSRuxrDHtgCdwAjhA",
+        "https://gateway.pinata.cloud/ipfs/QmWhMYvoGujQcvTCfV1JqpEBFXm4q55eHk9HFoRjFKvmE7",
+        "https://gateway.pinata.cloud/ipfs/QmX1oCNktqGHDpBoergaqNcP4fcKP1Qmz6mwbrNCg7yTib"],
+    "minterPublicKey":"0xc2A3cB7d4BF24e456051E3a710057ac61f5dB133",
+    "minterPrivateKey":"0xae6e55ee301653982277f9031e97e7a54ee258fd617214904baf62df3047e09b"
+}
